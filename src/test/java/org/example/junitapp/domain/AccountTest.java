@@ -1,5 +1,6 @@
 package org.example.junitapp.domain;
 
+import org.example.junitapp.infrastructure.exception.BussinesRuleException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -52,7 +53,7 @@ class AccountTest {
     }
 
     @Test
-    void test_subtract_account() {
+    void test_subtract_account() throws BussinesRuleException {
         //Act
         Account data= new Account("Sebastian",new BigDecimal("1000.123"));
 
@@ -78,6 +79,27 @@ class AccountTest {
         assertEquals(1000, data.getBalance().intValue());
 
         assertEquals("1000.123", data.getBalance().toPlainString());
+
+    }
+
+    @Test
+    void test_money_insufficient_exception_account() {
+
+        //Arrange
+        String expected = "Dinero insuficiente";
+
+        //Act
+        Account data= new Account("Sebastian",new BigDecimal("1000.123"));
+
+        BussinesRuleException exception = assertThrows(BussinesRuleException.class, ()-> {
+           data.subtractFromAccount(new BigDecimal(1500));
+        });
+
+        String present =  exception.getType();
+
+        //Assert
+        assertEquals(present,expected);
+
 
     }
 }
