@@ -16,6 +16,7 @@ public class BussinesRuleException extends Exception{
     private long id;
     private String code;
     private String type;
+    private Integer codeHttp;
 
 
     public BussinesRuleException(String type) {

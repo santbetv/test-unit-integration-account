@@ -18,7 +18,7 @@ public class Account {
 
 
     public void subtractFromAccount(BigDecimal value) throws BussinesRuleException {
-        BigDecimal newValue = this.balance.add(value);
+        BigDecimal newValue = this.balance.subtract(value);
         ValidateArgument.validateValueSubtractCorrect(newValue,value,"Dinero insuficiente");
         this.balance=newValue;
     }

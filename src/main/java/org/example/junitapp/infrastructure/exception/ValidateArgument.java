@@ -7,7 +7,7 @@
         }
 
         public static void validateValueSubtractCorrect(BigDecimal newValue, BigDecimal actualValue, String menssage) throws BussinesRuleException {
-            if (actualValue.compareTo(newValue) < 0) {
+            if (actualValue.compareTo(newValue) > 0) {
                 throw new BussinesRuleException(menssage);
             }
         }

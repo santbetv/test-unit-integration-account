@@ -87,10 +87,9 @@ class AccountTest {
 
         //Arrange
         String expected = "Dinero insuficiente";
-
-        //Act
         Account data= new Account("Sebastian",new BigDecimal("1000.123"));
 
+        //Act
         BussinesRuleException exception = assertThrows(BussinesRuleException.class, ()-> {
            data.subtractFromAccount(new BigDecimal(1500));
         });
@@ -101,5 +100,23 @@ class AccountTest {
         assertEquals(present,expected);
 
 
+    }
+
+    @Test
+    void test_transfer_money_account() throws BussinesRuleException {
+
+        //Arrange
+        Account data1= new Account("Andres",new BigDecimal("2500"));
+        Account data2= new Account("Sebastian",new BigDecimal("1500.8989"));
+
+        //Act
+
+        Bank bank = new Bank();
+        bank.setName("Banco del estado");
+        bank.transfer(data2,data1,new BigDecimal(500));
+
+        //Assert
+        assertEquals("1000.8989", data2.getBalance().toPlainString());
+        assertEquals("3000", data1.getBalance().toPlainString());
     }
 }
