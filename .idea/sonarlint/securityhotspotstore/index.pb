@@ -7,3 +7,9 @@ j
 :src/test/java/org/example/junitapp/domain/AccountTest.java,7/a/7ad8381bbda1df85cd9d3fc8da71b0abe557373d
 \
 ,src/main/java/org/example/junitapp/Main.java,d/a/dac99d90477c563172090ba4c010b91689277133
+Ü
+Vsrc/main/java/org/example/junitapp/infrastructure/exception/BussinesRuleException.java,5/a/5a776784880202f4c172c0a31ecef29907f574b5
+Å
+Qsrc/main/java/org/example/junitapp/infrastructure/exception/ValidateArgument.java,8/1/815fe191bbf73e30d9692c5072f52c531d249f2f
+c
+3src/main/java/org/example/junitapp/domain/Bank.java,3/7/37fa71945e0d7a2a78b1426e075fa7a58f48895a

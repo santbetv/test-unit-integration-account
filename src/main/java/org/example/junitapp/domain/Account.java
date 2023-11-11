@@ -13,9 +13,15 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Account {
+
     private String person;
     private BigDecimal balance;//saldo
+    private Bank bank;
 
+    public Account(String person, BigDecimal balance) {
+        this.person = person;
+        this.balance = balance;
+    }
 
     public void subtractFromAccount(BigDecimal value) throws BussinesRuleException {
         BigDecimal newValue = this.balance.subtract(value);

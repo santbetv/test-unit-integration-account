@@ -119,4 +119,28 @@ class AccountTest {
         assertEquals("1000.8989", data2.getBalance().toPlainString());
         assertEquals("3000", data1.getBalance().toPlainString());
     }
+
+    @Test
+    void test_relation_bank_account() throws BussinesRuleException {
+
+        //Arrange
+        Account data1= new Account("Andres",new BigDecimal("2500"));
+        Account data2= new Account("Sebastian",new BigDecimal("1500.8989"));
+
+        //Act
+
+        Bank bank = new Bank();
+        bank.addAccount(data1);
+        bank.addAccount(data2);
+
+        bank.setName("Banco del estado");
+        bank.transfer(data2,data1,new BigDecimal(500));
+
+        //Assert
+        assertEquals(2, bank.getAccounts().size());
+        assertEquals("Banco del estado", data1.getBank().getName());
+
+        assertEquals("Andres",bank.getAccounts().stream().filter(name -> name.getPerson().equals("Andres")).findFirst().get().getPerson());
+        assertTrue(bank.getAccounts().stream().anyMatch((name -> name.getPerson().equals("Sebastian"))));
+    }
 }
