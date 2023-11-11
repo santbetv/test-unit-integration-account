@@ -137,10 +137,11 @@ class AccountTest {
         bank.transfer(data2,data1,new BigDecimal(500));
 
         //Assert
-        assertEquals(2, bank.getAccounts().size());
-        assertEquals("Banco del estado", data1.getBank().getName());
-
-        assertEquals("Andres",bank.getAccounts().stream().filter(name -> name.getPerson().equals("Andres")).findFirst().get().getPerson());
-        assertTrue(bank.getAccounts().stream().anyMatch((name -> name.getPerson().equals("Sebastian"))));
+        assertAll(() -> {
+            assertEquals(2, bank.getAccounts().size());
+        },
+        () -> assertEquals("Banco del estado", data1.getBank().getName()),
+        () -> assertEquals("Andres",bank.getAccounts().stream().filter(name -> name.getPerson().equals("Andres")).findFirst().get().getPerson()),
+        () -> assertTrue(bank.getAccounts().stream().anyMatch((name -> name.getPerson().equals("Sebastian")))));
     }
 }

@@ -13,3 +13,7 @@ Vsrc/main/java/org/example/junitapp/infrastructure/exception/BussinesRuleExcepti
 Qsrc/main/java/org/example/junitapp/infrastructure/exception/ValidateArgument.java,8/1/815fe191bbf73e30d9692c5072f52c531d249f2f
 c
 3src/main/java/org/example/junitapp/domain/Bank.java,3/7/37fa71945e0d7a2a78b1426e075fa7a58f48895a
+]
+-.idea/sonarlint/securityhotspotstore/index.pb,8/8/88a9255124c95bdc913197c120a8d560edc59c8e
+S
+#.idea/sonarlint/issuestore/index.pb,9/f/9fe84ebb15faf917b7def6236dba604453cc61e0
