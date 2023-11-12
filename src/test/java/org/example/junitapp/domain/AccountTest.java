@@ -138,10 +138,10 @@ class AccountTest {
 
         //Assert
         assertAll(() -> {
-            assertEquals(2, bank.getAccounts().size());
-        },
-        () -> assertEquals("Banco del estado", data1.getBank().getName()),
-        () -> assertEquals("Andres",bank.getAccounts().stream().filter(name -> name.getPerson().equals("Andres")).findFirst().get().getPerson()),
-        () -> assertTrue(bank.getAccounts().stream().anyMatch((name -> name.getPerson().equals("Sebastian")))));
+            assertEquals(2, bank.getAccounts().size(), () -> "La cantidad de bancos NO es lo que se esperaba");
+            },
+        () -> assertEquals("Banco del estado", data1.getBank().getName(), () -> "El nombre del banco NO es lo que se esperaba"),
+        () -> assertEquals("Andres",bank.getAccounts().stream().filter(name -> name.getPerson().equals("Andres")).findFirst().get().getPerson(), () -> "El nombre de la persona de la cuenta en el bo NO es lo que se esperaba"),
+        () -> assertTrue(bank.getAccounts().stream().anyMatch((name -> name.getPerson().equals("Sebastian"))),() -> "El nombre de la persona de la cuenta en el bo NO es lo que se esperaba"));
     }
 }
