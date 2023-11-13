@@ -6,8 +6,8 @@
         public ValidateArgument() {
         }
 
-        public static void validateValueSubtractCorrect(BigDecimal newValue, BigDecimal actualValue, String menssage) throws BussinesRuleException {
-            if (actualValue.compareTo(newValue) > 0) {
+        public static void validateValueSubtractCorrect(BigDecimal valueUpdated, BigDecimal valueSubtract, String menssage) throws BussinesRuleException {
+            if (valueUpdated.compareTo(BigDecimal.ZERO) < 0) {
                 throw new BussinesRuleException(menssage);
             }
         }

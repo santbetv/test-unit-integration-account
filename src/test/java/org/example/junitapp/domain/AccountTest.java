@@ -1,16 +1,40 @@
 package org.example.junitapp.domain;
 
 import org.example.junitapp.infrastructure.exception.BussinesRuleException;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.condition.*;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.math.BigDecimal;
+import java.util.Map;
+import java.util.Properties;
 
 import static org.junit.jupiter.api.Assertions.*;
-
 class AccountTest {
+
+    private Account data;
+
+    @BeforeAll
+    static void beforeAll() {
+        System.out.println("iniciando el test");
+    }
+
+    @AfterAll
+    static void afterAll() {
+        System.out.println("finalizando el test");
+    }
+
+    @BeforeEach//Antes de cada  metodo se ejecuta
+    void setUp() {
+        data= new Account("Sebastian",new BigDecimal("456454"));
+    }
+
+
+    @AfterEach//Despues de cada  metodo se ejecuta
+    void tearDown() {
+
+    }
 
     @Test
     @DisplayName("Probando  el nombre de la cuenta")
@@ -19,7 +43,7 @@ class AccountTest {
         String expected = "Sebastian";
 
         //Act
-        Account data= new Account("Sebastian",new BigDecimal("456454"));
+
         Account account = Account.builder().person("Sebastian").balance(new BigDecimal("10000.123456")).build();
 
         //Assert
@@ -35,7 +59,6 @@ class AccountTest {
         BigDecimal balance = new BigDecimal(456454);
 
         //Act
-        Account data= new Account("Sebastian",new BigDecimal("456454"));
 
 
         //Assert
@@ -50,7 +73,6 @@ class AccountTest {
     void test_object_account() {
 
         //Act
-        Account data= new Account("Sebastian",new BigDecimal("456454"));
         Account data2= new Account("Sebastian",new BigDecimal("456454"));
 
         //Assert
@@ -156,4 +178,59 @@ class AccountTest {
         () -> assertEquals("Andres",bank.getAccounts().stream().filter(name -> name.getPerson().equals("Andres")).findFirst().get().getPerson(), () -> "El nombre de la persona de la cuenta en el bo NO es lo que se esperaba"),
         () -> assertTrue(bank.getAccounts().stream().anyMatch((name -> name.getPerson().equals("Sebastian"))),() -> "El nombre de la persona de la cuenta en el bo NO es lo que se esperaba"));
     }
+
+    @RepeatedTest(5)
+    @EnabledOnOs({OS.LINUX,OS.MAC})
+    @DisplayName("Probando  solo linux y mac")
+    void test_only_linux_mac(){
+        System.out.println("Probando  solo linux y mac.");
+    }
+
+    @Test
+    @EnabledOnOs({OS.WINDOWS})
+    @DisplayName("Probando  solo windows")
+    void test_only_windows(){
+        System.out.println("Probando  solo windows");
+    }
+
+    @Test
+    @EnabledOnJre(JRE.JAVA_11)
+    void test_only_JDK11() {
+        System.out.println("Probando solo en java 11");
+    }
+
+    @Test
+    void test_print_properties_system() {
+        Properties properties = System.getProperties();
+        properties.forEach((k,v) -> System.out.println(k+" : "+v));
+    }
+
+    @Test
+    @EnabledIfSystemProperty(named = "java.version", matches = ".*21.*")
+    void test_java_version() {
+        System.out.println("Probando tipo de version java");
+    }
+
+    @Test
+    void test_print_envaroments_system() {
+        Map<String,String> getEnv = System.getenv();
+        getEnv.forEach((k,v) -> System.out.println(k+" : "+v));
+    }
+
+    @ParameterizedTest(name = "numero  {index} ejecutando con valor {argumentsWithNames}")
+    @DisplayName("Probando  el retido de la cuenta en lista")
+    @ValueSource(strings = {"100","200","300","500","700","1000.123"})
+    void test_subtract_account_in_list(String value) throws BussinesRuleException {
+        //Act
+        Account data= new Account("Sebastian",new BigDecimal("1000.123"));
+
+        data.subtractFromAccount(new BigDecimal(value));
+
+        //Assert
+        assertNotNull(data.getBalance());
+        //assertEquals(900, data.getBalance().intValue());
+        assertTrue(data.getBalance().compareTo(BigDecimal.ZERO)>=0);
+
+    }
 }
+
