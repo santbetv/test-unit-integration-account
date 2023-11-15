@@ -4,11 +4,17 @@ import org.example.junitapp.infrastructure.exception.BussinesRuleException;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.condition.*;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.math.BigDecimal;
+import java.time.Duration;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.*;
 class AccountTest {
@@ -27,7 +33,7 @@ class AccountTest {
 
     @BeforeEach//Antes de cada  metodo se ejecuta
     void setUp() {
-        data= new Account("Sebastian",new BigDecimal("456454"));
+        data= new Account("Sebastian",new BigDecimal("1000.12345"));
     }
 
 
@@ -56,7 +62,7 @@ class AccountTest {
     void test_balance_account(){
 
         //Arrange
-        BigDecimal balance = new BigDecimal(456454);
+        BigDecimal balance = new BigDecimal("1000.12345");
 
         //Act
 
@@ -73,7 +79,7 @@ class AccountTest {
     void test_object_account() {
 
         //Act
-        Account data2= new Account("Sebastian",new BigDecimal("456454"));
+        Account data2= new Account("Sebastian",new BigDecimal("1000.12345"));
 
         //Assert
         assertTrue(data.equals(data2));
@@ -85,7 +91,7 @@ class AccountTest {
         //Act
         Account data= new Account("Sebastian",new BigDecimal("1000.123"));
 
-        data.subtractFromAccount(new BigDecimal(100));
+        data.subtractFromAccount(new BigDecimal("100"));
 
         //Assert
         assertNotNull(data.getBalance());
@@ -101,7 +107,7 @@ class AccountTest {
         //Act
         Account data= new Account("Sebastian",new BigDecimal("900.123"));
 
-        data.addFromAccount(new BigDecimal(100));
+        data.addFromAccount(new BigDecimal("100"));
 
         //Assert
         assertNotNull(data.getBalance());
@@ -121,7 +127,7 @@ class AccountTest {
 
         //Act
         BussinesRuleException exception = assertThrows(BussinesRuleException.class, ()-> {
-           data.subtractFromAccount(new BigDecimal(1500));
+           data.subtractFromAccount(new BigDecimal("1500"));
         });
 
         String present =  exception.getType();
@@ -146,7 +152,7 @@ class AccountTest {
 
         Bank bank = new Bank();
         bank.setName("Banco del estado");
-        bank.transfer(data2,data1,new BigDecimal(500));
+        bank.transfer(data2,data1,new BigDecimal("500"));
 
         //Assert
         assertEquals("1000.8989", data2.getBalance().toPlainString());
@@ -168,7 +174,7 @@ class AccountTest {
         bank.addAccount(data2);
 
         bank.setName("Banco del estado");
-        bank.transfer(data2,data1,new BigDecimal(500));
+        bank.transfer(data2,data1,new BigDecimal("500"));
 
         //Assert
         assertAll(() -> {
@@ -179,42 +185,46 @@ class AccountTest {
         () -> assertTrue(bank.getAccounts().stream().anyMatch((name -> name.getPerson().equals("Sebastian"))),() -> "El nombre de la persona de la cuenta en el bo NO es lo que se esperaba"));
     }
 
-    @RepeatedTest(5)
-    @EnabledOnOs({OS.LINUX,OS.MAC})
-    @DisplayName("Probando  solo linux y mac")
-    void test_only_linux_mac(){
-        System.out.println("Probando  solo linux y mac.");
-    }
 
-    @Test
-    @EnabledOnOs({OS.WINDOWS})
-    @DisplayName("Probando  solo windows")
-    void test_only_windows(){
-        System.out.println("Probando  solo windows");
-    }
+    @Nested
+    class TestingSystemTest{
+        @RepeatedTest(5)
+        @EnabledOnOs({OS.LINUX,OS.MAC})
+        @DisplayName("Probando  solo linux y mac")
+        void test_only_linux_mac(){
+            System.out.println("Probando  solo linux y mac.");
+        }
 
-    @Test
-    @EnabledOnJre(JRE.JAVA_11)
-    void test_only_JDK11() {
-        System.out.println("Probando solo en java 11");
-    }
+        @Test
+        @EnabledOnOs({OS.WINDOWS})
+        @DisplayName("Probando  solo windows")
+        void test_only_windows(){
+            System.out.println("Probando  solo windows");
+        }
 
-    @Test
-    void test_print_properties_system() {
-        Properties properties = System.getProperties();
-        properties.forEach((k,v) -> System.out.println(k+" : "+v));
-    }
+        @Test
+        @EnabledOnJre(JRE.JAVA_11)
+        void test_only_JDK11() {
+            System.out.println("Probando solo en java 11");
+        }
 
-    @Test
-    @EnabledIfSystemProperty(named = "java.version", matches = ".*21.*")
-    void test_java_version() {
-        System.out.println("Probando tipo de version java");
-    }
+        @Test
+        void test_print_properties_system() {
+            Properties properties = System.getProperties();
+            properties.forEach((k,v) -> System.out.println(k+" : "+v));
+        }
 
-    @Test
-    void test_print_envaroments_system() {
-        Map<String,String> getEnv = System.getenv();
-        getEnv.forEach((k,v) -> System.out.println(k+" : "+v));
+        @Test
+        @EnabledIfSystemProperty(named = "java.version", matches = ".*21.*")
+        void test_java_version() {
+            System.out.println("Probando tipo de version java");
+        }
+
+        @Test
+        void test_print_envaroments_system() {
+            Map<String,String> getEnv = System.getenv();
+            getEnv.forEach((k,v) -> System.out.println(k+" : "+v));
+        }
     }
 
     @ParameterizedTest(name = "numero  {index} ejecutando con valor {argumentsWithNames}")
@@ -232,5 +242,53 @@ class AccountTest {
         assertTrue(data.getBalance().compareTo(BigDecimal.ZERO)>=0);
 
     }
+    @ParameterizedTest(name = "numero {index} ejecutando con valor {0} - {argumentsWithNames}")
+    @CsvSource({"1,100", "2,200", "3,300", "4,500", "5,700", "6,1000.12345"})
+    void testDebitoCuentaCsvSource(String index, String monto) throws BussinesRuleException {
+        System.out.println(index + " -> " + monto);
+        data.subtractFromAccount(new BigDecimal(monto));
+        assertNotNull(data.getBalance());
+        assertTrue(data.getBalance().compareTo(BigDecimal.ZERO) >= 0);
+    }
+
+    @Tag("param")
+    @ParameterizedTest(name = "numero {index} ejecutando con valor {0} - {argumentsWithNames}")
+    @MethodSource("montoList")
+    void testDebitoCuentaMethodSource(String monto) throws BussinesRuleException {
+        data.subtractFromAccount(new BigDecimal(monto));
+        assertNotNull(data.getBalance());
+        assertTrue(data.getBalance().compareTo(BigDecimal.ZERO) >= 0);
+    }
+
+    static List<String> montoList() {
+        return Arrays.asList("100", "200", "300", "500", "700", "1000.12345");
+    }
+
+    @Nested
+    @Tag("timeout")
+    class EjemploTimeoutTest{
+        @Test
+        @Timeout(1)
+        void pruebaTimeout() throws InterruptedException {
+            TimeUnit.MILLISECONDS.sleep(100);
+
+        }
+
+        @Test
+        @Timeout(value = 1000, unit = TimeUnit.MILLISECONDS)
+        void pruebaTimeout2() throws InterruptedException {
+            TimeUnit.MILLISECONDS.sleep(900);
+        }
+
+        @Test
+        void testTimeoutAssertions() {
+            assertTimeout(Duration.ofSeconds(5), ()->{
+                TimeUnit.MILLISECONDS.sleep(4000);
+            });
+        }
+    }
+
+
+
 }
 
